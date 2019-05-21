@@ -4,14 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "next-dev": "next",
-    "next-build": "next build",
-    "next-start": "next start",
+    "build": "next build",
     "gcp-build": "next build",
     "prestart": "npm run gcp-build",
     "start": "next start -p $PORT",
-    "start:dev": "npm run devServer",
-    "devServer": "webpack-dev-server --config webpack.config.dev.js --open --hot --inline",
+    "start:dev": "next",
     "set": "gcloud config set project sport-box-scores",
     "deploy": "npm run set && gcloud app deploy --quiet"
   },
