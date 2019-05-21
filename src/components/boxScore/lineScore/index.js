@@ -4,27 +4,25 @@ import FlexBox from '../../styled/flexbox';
 
 const LineScore = ({ linescore, away_sname, home_sname }) => {
   
-  const { 
-    inning_line_score,
-    away_team_hits,
-    away_team_runs,
-    away_team_errors,
-    home_team_runs,
-    home_team_hits,
-    home_team_errors,
-  } = linescore;
+  const inning_line_score = linescore.innings;
+  const away_team_hits = linescore.teams.away.hits;
+  const away_team_runs = linescore.teams.away.runs;
+  const away_team_errors = linescore.teams.away.errors;
+  const home_team_runs = linescore.teams.home.runs;
+  const home_team_hits = linescore.teams.home.hits;
+  const home_team_errors = linescore.teams.home.errors;
 
   const isThirdColumn = (index) => {
     return index % 3 === 0;
   };
 
-  const listInnings = inning_line_score.map((inning, index) => (
+  const listInnings = inning_line_score.map((inning) => (
     <FlexBox 
-      key={index} 
-      margin={isThirdColumn(index + 1) ? '0 5px 0 0' : '0'}
+      key={inning.num} 
+      margin={isThirdColumn(inning.num) ? '0 5px 0 0' : '0'}
       flexDirection="column">
-        <span><b>{ inning.away }</b></span>
-        <span><b>{ inning.home }</b></span>
+        <span><b>{ inning.away.runs }</b></span>
+        <span><b>{ inning.home.runs }</b></span>
     </FlexBox>
   ));
   

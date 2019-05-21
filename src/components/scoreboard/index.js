@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FlexBox from '../styled/flexbox';
 import Container from '../styled/container';
-import BoxScore from '../boxScore';
+import BoxScore from '../boxscore';
 
 const GridContainer = styled.div`
   display: grid;
@@ -10,7 +10,7 @@ const GridContainer = styled.div`
   grid-template-rows: ${props => props.gridTemplateRows || ''};
 `;
 
-const Scoreboard = ({scoresMatrix, date, expandBoxscores}) => {
+const Scoreboard = ({scoresMatrix, expandBoxscores}) => {
   const displayBoxScores = () => {
     const elements = [];
     scoresMatrix.map((scores, index1)  => {
@@ -20,7 +20,6 @@ const Scoreboard = ({scoresMatrix, date, expandBoxscores}) => {
             <div key={index2} style={{width: '100%'}}>
               <BoxScore
                 score={score}
-                date={date}
                 expand={expandBoxscores && score.status !== 'Postponed'}
               />
             </div>

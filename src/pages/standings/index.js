@@ -14,15 +14,14 @@ class Standings extends Component {
   }
 
   componentDidMount() {
-    const { getStandings } = this.props;
-    getStandings();
+    
   }
   
   formatLastTen({wins, losses}) {
     return `${wins} - ${losses}`;
   }
   render() {
-    const { standings } = this.props;
+    const { standings } = this.props || [];
     return (
       <div>
         <FlexBox
@@ -63,18 +62,6 @@ class Standings extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  return {
-    standings: state.mlb.standings,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getStandings: () => dispatch(mlbActions.getStandings()),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Standings);
+export default Standings;
 
 

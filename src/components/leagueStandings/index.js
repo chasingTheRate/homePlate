@@ -5,7 +5,7 @@ import theme from '../../style/theme';
 
 const StandingsTH = styled.th`
   text-align: ${props => props.textAlign || 'right'};
-  width: ${props => props.width || ''};
+  width: ${props => props.width || '10%'};
   padding: ${props => props.padding || '0'};  
 `;
 
@@ -48,7 +48,7 @@ const LeagueStanding = ({title, league, divisions}) => {
                   <StandingsTH>PCT</StandingsTH>
                   <StandingsTH>GB</StandingsTH>
                   <StandingsTH>L10</StandingsTH>
-                  <StandingsTH>STRK</StandingsTH>
+                  <StandingsTH width='12%' >STRK</StandingsTH>
                 </tr>
                 {division.teamRecords.map(teamRecord => {
                   const lastTen = teamRecord.records.splitRecords.find(rec => rec.type === 'lastTen' );

@@ -12,23 +12,28 @@ const tableStyle = {
   margin: "2px 0 0 0"
 }
 
-const getInningsPitched = (outs) => {
+const getInningsPitched = (innPitchedAsFloatString) => {
+  const ipArr = innPitchedAsFloatString.split('.');
   const style = {
     fontSize: '8px',
   }
-  if (outs >= 3 && outs % 3 === 0) {
-    return <span>{outs/3}</span>
-  } else if (outs < 3 && outs % 3 > 0) {
-    return <span style={style}>{`${outs % 3}/3`}</span>
-  } else if (outs === 0) {
-    return <span>0</span>
-  } else {
-    return <span>{Math.floor(outs/3)}<span style={style}>{`${outs % 3}/3`}</span></span>
+  let wholeInningsPitched = '';
+  let partialInningsPitched = '';
+
+  if (ipArr[0] !== '0') {
+    wholeInningsPitched = ipArr[0];
   }
+
+  if (ipArr[1] === '1') {
+    partialInningsPitched = '1/3';
+  } else if (ipArr[1] === '2') {
+    partialInningsPitched = '2/3';
+  }
+
+  return <span>{wholeInningsPitched}<span style={style}>{partialInningsPitched}</span></span>;
 }
 
-const PitchingSummary = ({ pitching, away_sname, home_sname }) => {
-  
+const PitchingSummary = ({ awayPitchers, homePitchers, away_sname, home_sname }) => {
   const getPitcherNote = (pitcher) => {
     var tag = ''
     if(pitcher.win || pitcher.loss || pitcher.sv != "0") {
@@ -37,10 +42,10 @@ const PitchingSummary = ({ pitching, away_sname, home_sname }) => {
     return tag;
   }
 
-  const listTeamPitching = (name, pitchers) => {
+  const listTeamPitching = (name, pitchers, keyName) => {
     return(
-      <table style={tableStyle}>
-        <tbody>
+      <table style={tableStyle} key={keyName}>
+        <tbody key={keyName}>
         <tr>
           <PitchStatTH textAlign="left" width="auto">{name}</PitchStatTH>
           <PitchStatTH>IP</PitchStatTH>
@@ -51,15 +56,15 @@ const PitchingSummary = ({ pitching, away_sname, home_sname }) => {
           <PitchStatTH>NP</PitchStatTH>
           <PitchStatTH>ERA</PitchStatTH>
         </tr>
-        {pitchers.map(pitcher => (
-          <tr key={pitcher.id}>
-            <td style={{textAlign: "left"}}>{`${pitcher.name} ${getPitcherNote(pitcher)}`}</td>
-            <td style={{textAlign: "right"}}>{getInningsPitched(parseInt(pitcher.out))}</td>
-            <td style={{textAlign: "right"}}>{pitcher.h}</td>
-            <td style={{textAlign: "right"}}>{pitcher.er}</td>
-            <td style={{textAlign: "right"}}>{pitcher.bb}</td>
-            <td style={{textAlign: "right"}}>{pitcher.so}</td>
-            <td style={{textAlign: "right"}}>{pitcher.np}</td>
+        {pitchers.map((pitcher, index) => (
+          <tr key={index}>
+            <td style={{textAlign: "left"}}>{pitcher.name}</td>
+            <td style={{textAlign: "right"}}>{getInningsPitched(pitcher.inningsPitched)}</td>
+            <td style={{textAlign: "right"}}>{pitcher.hits}</td>
+            <td style={{textAlign: "right"}}>{pitcher.earnedRuns}</td>
+            <td style={{textAlign: "right"}}>{pitcher.baseOnBalls}</td>
+            <td style={{textAlign: "right"}}>{pitcher.strikeOuts}</td>
+            <td style={{textAlign: "right"}}>{pitcher.numberOfPitches}</td>
             <td style={{textAlign: "right"}}>{pitcher.era}</td>
           </tr>
         ))}
@@ -70,8 +75,8 @@ const PitchingSummary = ({ pitching, away_sname, home_sname }) => {
 
   return (
     <div>
-      {listTeamPitching(away_sname, pitching[0].pitcher)}
-      {listTeamPitching(home_sname, pitching[1].pitcher)}
+      {listTeamPitching(away_sname, awayPitchers, 'awayPitchers')}
+      {listTeamPitching(home_sname, homePitchers, 'homePitchers')}
     </div>
   )
 }

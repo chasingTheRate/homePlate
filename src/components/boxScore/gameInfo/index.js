@@ -1,16 +1,23 @@
 import React from 'react';
 import * as helper from '../../../util/summaryHelpers';
 
-const GameInfo = ({ gameInfo, away_sname, home_sname }) => {
+const GameInfo = ({ gameInfo }) => {
 
-  const listGameInfoData = () => {
-    const textData = helper.parseTextData(gameInfo, ['WP', 'HBP', 'Inherited runners-scored', 'Umpires', 'T', 'Att'])
-    return helper.createDisplayElements([textData])
+  const listPitchingAndGameInfo = () => {
+    let elements = [];
+    gameInfo.map( (info, index) => {
+      if (index === 0) {
+        elements.push(<span key={index}><b> {info.label}: </b>{info.value}</span>)
+      } else {
+        elements.push(<span key={index}><b> {info.label}: </b>{info.value}</span>)
+      }
+    })
+    return elements;
   }
 
   return (
     <div style={{margin: "2px 0 0 0"}}>
-      {listGameInfoData()}      
+      {listPitchingAndGameInfo()}      
     </div>
   )
 }

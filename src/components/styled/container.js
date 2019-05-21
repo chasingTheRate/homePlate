@@ -19,5 +19,7 @@ export default styled.div`
   border-width: ${props => props.borderWidth || ''};
   border-style: ${props => props.borderStyle || ''};
   overflow: ${props => props.overflow || 'hidden'};
+  overflow-x: ${props => props.overflowX || 'hidden'};
+  overflow-y: ${props => props.overflowY || 'hidden'};
   flex-grow: ${props => props.flexGrow || 0};
 `;

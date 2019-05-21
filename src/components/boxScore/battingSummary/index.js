@@ -1,6 +1,7 @@
 import React from 'react';
 import * as helper from '../../../util/summaryHelpers';
 import styled from 'styled-components';
+import config from '../../../../config';
 
 const BatStatTH = styled.th`
   text-align: ${props => props.textAlign || 'right'};
@@ -13,12 +14,26 @@ const tableStyle = {
   margin: "2px 0 0 0"
 }
 
-const BattingSummary = ({ batting, away_sname, home_sname }) => {
+const BattingSummary = ({
+  awayBatters,
+  homeBatters,
+  away_sname,
+  home_sname,
+  fieldingAndBattingInfo,
+}) => {
+  
+  const getFieldList = (info) => {
+    try {
+      return info.fieldList;
+    } catch (err) {
+      return []
+    }
+  }
 
-  const listTeamBatting = (name, batters) => {
+  const listTeamBatting = (name, batters, keyName) => {
     return(
-      <table style={ tableStyle }>
-        <tbody>
+      <table style={ tableStyle } key={keyName}>
+        <tbody key={keyName}>
         <tr>
           <BatStatTH textAlign={"left"} width='auto'>{name}</BatStatTH>
           <BatStatTH>AB</BatStatTH>
@@ -29,15 +44,15 @@ const BattingSummary = ({ batting, away_sname, home_sname }) => {
           <BatStatTH>SO</BatStatTH>
           <BatStatTH>AVG</BatStatTH>
         </tr>
-        {batters.map(batter => (
-          <tr key={batter.id}>
-            <td style={{textAlign: "left"}}>{`${batter.name} ${batter.pos.toLowerCase()}`}</td>
-            <td style={{textAlign: "right"}}>{batter.ab}</td>
-            <td style={{textAlign: "right"}}>{batter.r}</td>
-            <td style={{textAlign: "right"}}>{batter.h}</td>
+        {batters.map((batter, index) => (
+          <tr key={index}>
+            <td style={{textAlign: "left"}}>{`${batter.name} ${batter.position.toLowerCase()}`}</td>
+            <td style={{textAlign: "right"}}>{batter.atBats}</td>
+            <td style={{textAlign: "right"}}>{batter.runs}</td>
+            <td style={{textAlign: "right"}}>{batter.hits}</td>
             <td style={{textAlign: "right"}}>{batter.rbi}</td>
-            <td style={{textAlign: "right"}}>{batter.bb}</td>
-            <td style={{textAlign: "right"}}>{batter.so}</td>
+            <td style={{textAlign: "right"}}>{batter.baseOnBalls}</td>
+            <td style={{textAlign: "right"}}>{batter.strikeOuts}</td>
             <td style={{textAlign: "right"}}>{batter.avg}</td>
           </tr>
         ))}
@@ -46,17 +61,19 @@ const BattingSummary = ({ batting, away_sname, home_sname }) => {
     )
   };
 
-  const listBattingTextData = () => {
-    const textData = helper.parseTextDataFromList(batting, ['FIELDING', 'BATTING', 'BASERUNNING'], ['E', 'DP', '2B', 'HR', 'RBI', 'Team LOB', 'SB', 'CS'])
-    return helper.createDisplayElements([textData.FIELDING || {}, textData.BATTING, (textData.BASERUNNING || {})])
+  const listBattingTextData = (allowedCategories) => {
+    const battingFieldList = getFieldList(fieldingAndBattingInfo[0], allowedCategories.batting);
+    const baserunningFieldList = getFieldList(fieldingAndBattingInfo[1]);
+    const fieldingFieldList = getFieldList(fieldingAndBattingInfo[2]);
+    return helper.createDisplayElements([fieldingFieldList, battingFieldList, baserunningFieldList]);
   }
 
   return (
     <div>
-      {listTeamBatting(away_sname, batting[1].batter)}
-      {listTeamBatting(home_sname, batting[0].batter)}
+      {listTeamBatting(away_sname, awayBatters, 'awayBatters')}
+      {listTeamBatting(home_sname, homeBatters, 'homeBatters')}
       <div style={{margin: "2px 0 0 0"}}>
-        {listBattingTextData()}
+        { listBattingTextData(config.categories) }
       </div>
     </div>
   )

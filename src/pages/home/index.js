@@ -1,104 +1,36 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
 import Container from '../../components/styled/container';
-import moment from 'moment';
 import Scoreboard from '../../components/scoreboard';
-import * as mlbApi from '../../api/mlbApi';
-import devices from '../../util/devices';
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-
-    this.getGameScores = this.getGameScores.bind(this);
-    this.isLoading = this.isLoading.bind(this);
-    this.deviceDidChangeSize = this.deviceDidChangeSize.bind(this);
-    this.state = {
-      isLoading: false,
-      scores: [],
-      scoreMatrix: [],
-      date: this.getDate(1),
-      deviceSize: props.deviceSize,
-      expandBoxscores: false,
-    }
-  }
-
-  shouldComponentUpdate(nextProps, _) {
-    const { deviceSize } = this.props;
-    if (nextProps.deviceSize !== deviceSize) {
-      this.deviceDidChangeSize(nextProps.deviceSize);
-    }
-    return true;
-  }
-
-  async componentDidMount(){
-    await this.getGameScores(this.state.date);
-    this.deviceDidChangeSize(this.props.deviceSize);
-  }
-
-  deviceDidChangeSize(size) {
-    const { scores } = this.state;
-    let localScores = []
+  getScoresMatrix(scores = [], isMobile) {
+    let scoresMatrix = []
     let mod = 1;
-    let shouldExpandBoxscores = false;
 
-    if (size === devices.mediumDevices.name) {
-      mod = 2
-    } else if (size === devices.largeDevices.name) {
-      shouldExpandBoxscores = true;
+    if (!isMobile) {
       mod = 3
     }
-
+      
     for (var i=0; i<= mod-1; i++) {
-      localScores.push([]);
+      scoresMatrix.push([]);
     };
 
     scores.map((score, index) => {
-      localScores[index % mod].push(score);
+      scoresMatrix[index % mod].push(score);
     })
 
-    this.setState({
-      scoreMatrix: localScores,
-      expandBoxscores: shouldExpandBoxscores,
-    })
+    return scoresMatrix;
   }
-
-  getDate(daysFromToday) {
-    const yesterday = moment().subtract(daysFromToday.toString(), 'day');
-    return {
-      year: yesterday.format('YYYY'),
-      month: yesterday.format('MM'),
-      day: yesterday.format('DD'),
-    }
-  }
-
-  isLoading(state) {
-    this.setState({
-      isLoading: state
-    })
-  }
-
-  async getGameScores(date) {
-    const scores = await mlbApi.getMiniScoreboardOnDate(date);
-    this.setState({
-      scores,
-      isLoading: false,
-      date: date,
-    });
-  }
-
-
 
   render() {
-    const { isLoading, scoreMatrix, date, expandBoxscores } = this.state;
+    const { boxscores, isMobile } = this.props;
+    const scoresMatrix = this.getScoresMatrix(boxscores, isMobile);
     return (
       <Container padding='0' margin="auto">
-        {scoreMatrix.length > 0 && 
+        {boxscores.length > 0 && 
           <Scoreboard
-            scoresMatrix={scoreMatrix}
-            date={date}
-            expandBoxscores={expandBoxscores}
+            scoresMatrix={scoresMatrix}
+            expandBoxscores={!this.props.isMobile}
           />
         }
       </Container>
@@ -106,16 +38,16 @@ class Home extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  return {
-    deviceSize: state.app.deviceSize,
-  };
-}
+// function mapStateToProps(state, ownProps) {
+//   return {
+//     deviceSize: state.app.deviceSize,
+//   };
+// }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    // getBlindById: (id) => dispatch(blindActions.getBlindById(id)),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     getBoxscoresByDate: (date) => dispatch(mlbActions.getBoxscoresByDate(date)),
+//   };
+// }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default Home;//withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
