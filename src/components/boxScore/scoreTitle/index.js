@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import abstractGameCodes from '../../../models/abstractGameCodes';
+import statusCodes from '../../../models/statusCodes';
 import inningHalfTypes from '../../../models/inningHalfTypes';
 import theme from '../../../style/theme';
 import FlexBox from '../../styled/flexbox';
@@ -18,7 +19,10 @@ const ScoreTitle = ({
  
   const getScoreTitle = () => {
     var element;
-    if (gameStatus.abstractGameCode === abstractGameCodes.final || gameStatus.abstractGameCode === abstractGameCodes.live) {
+    if ( 
+      ( gameStatus.abstractGameCode === abstractGameCodes.final || 
+      gameStatus.abstractGameCode === abstractGameCodes.live ) &&
+      gameStatus.statusCode !== statusCodes.postponed) {
       var scoreTitle = '';
       if(awayTeamRuns > homeTeamRuns) {
         scoreTitle = `${awayTeamName} ${awayTeamRuns}, ${homeTeamName} ${homeTeamRuns}`;
@@ -36,7 +40,11 @@ const ScoreTitle = ({
     let status = ''
     let color = theme.colors.dark;
     if (gameStatus.abstractGameCode === abstractGameCodes.final) {
-      status = 'Final';
+      if (gameStatus.statusCode === statusCodes.postponed) {
+        status = 'Postponed';
+      } else {
+        status = 'Final';
+      }
     } else if (gameStatus.abstractGameCode === abstractGameCodes.live) {
       let innHalf = ''
       if (inningHalf === inningHalfTypes.bottom) {

@@ -7,6 +7,7 @@ import BattingSummary from './battingSummary';
 import PitchingSummary from './pitchingSummary';
 import GameInfo from './gameInfo';
 import abstractGameCodes from '../../models/abstractGameCodes';
+import statusCodes from '../../models/statusCodes';
 import theme from '../../style/theme';
 
 
@@ -18,16 +19,19 @@ class Boxscore extends Component {
     this.allowedToExpand = this.allowedToExpand.bind(this);
     this.didClickBoxscore = this.didClickBoxscore.bind(this);
 
+    const {abstractGameCode, statusCode } = props.score.status;
+
     this.state = {
       isExpanded: props.expand || false,
-      allowedToExpand: this.allowedToExpand(props.score.status.abstractGameCode),
+      allowedToExpand: this.allowedToExpand(statusCode, abstractGameCode),
     }
   }
 
   shouldComponentUpdate(nextProps) {
     if(nextProps.score._id !== this.props.score._id) {
+      const {abstractGameCode, statusCode } = nextProps.score.status;
       this.setState({
-        allowedToExpand: this.allowedToExpand(nextProps.score.status.abstractGameCode),
+        allowedToExpand: this.allowedToExpand(statusCode, abstractGameCode),
       })
     }
     return true;
@@ -39,8 +43,11 @@ class Boxscore extends Component {
     })
   }
 
-  allowedToExpand(gameCode){
-    return (gameCode === abstractGameCodes.final || gameCode === abstractGameCodes.live); 
+  allowedToExpand(statusCode, abstractGameCode){
+    return (
+      (abstractGameCode === abstractGameCodes.final || abstractGameCode === abstractGameCodes.live) &&
+      statusCode !== statusCodes.postponed
+    );
   }
 
   didClickBoxscore(){
