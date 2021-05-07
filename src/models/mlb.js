@@ -1,7 +1,7 @@
 
 export default {
   mlbApi: {
-    baseUrl: 'http://statsapi.mlb.com:80/api/v1/',
+    baseUrl: 'https://statsapi.mlb.com/api/v1',
   },
   leagues: {
     american: {

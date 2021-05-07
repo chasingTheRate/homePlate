@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FlexBox from '../styled/flexbox';
 import Container from '../styled/container';
-import BoxScore from '../boxscore';
+import BoxScore from '../boxScore';
 
 const GridContainer = styled.div`
   display: grid;
