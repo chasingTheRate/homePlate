@@ -18,7 +18,7 @@ class Home extends Component {
     scores.map((score, index) => {
       scoresMatrix[index % mod].push(score);
     })
-
+   
     return scoresMatrix;
   }
 
@@ -38,16 +38,5 @@ class Home extends Component {
   }
 }
 
-// function mapStateToProps(state, ownProps) {
-//   return {
-//     deviceSize: state.app.deviceSize,
-//   };
-// }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     getBoxscoresByDate: (date) => dispatch(mlbActions.getBoxscoresByDate(date)),
-//   };
-// }
-
-export default Home;//withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default Home;

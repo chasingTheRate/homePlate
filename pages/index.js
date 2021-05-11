@@ -9,14 +9,23 @@ import * as dugoutApi from '../src/api/dugoutApi';
 import * as util from '../src/util';
 
 class Home extends Component {
-  static async getInitialProps({ req, query }) {
-    const isMobile = util.isMobile(req);
-    const fullDate = query.date || Home.getDate();
-    const day = moment(fullDate, "L").format('ddd');
-    const date = moment(fullDate, "L").format('DD');
-    const boxscores = await dugoutApi.getBoxscoresByDate(fullDate);
-    return { boxscores, isMobile, fullDate, day, date };
-  }
+
+
+  // static async getInitialProps({ req, query }) {
+
+  //   console.log('test');
+  //   const isMobile = util.isMobile(req);
+  //   const fullDate = query.date || Home.getDate();
+  //   const day = moment(fullDate, "L").format('ddd');
+  //   const date = moment(fullDate, "L").format('DD');
+  //   let boxscores;
+  //   try {
+  //     boxscores = await dugoutApi.getBoxscoresByDate(fullDate);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  //   return { boxscores, isMobile, fullDate, day, date };
+  // }
 
   static getDate(){
     return moment().utcOffset(config.utcOffset).format('L');
@@ -25,6 +34,7 @@ class Home extends Component {
   static didChangeDate(date){
     Router.push(`/?date=${date}`);
   }
+
 
   render() {
     const { boxscores, isMobile, fullDate, day, date } = this.props;
@@ -42,6 +52,29 @@ class Home extends Component {
       </MainLayout>
     )
   }
+}
+
+export async function getServerSideProps({ req, query }) {
+  const isMobile = util.isMobile(req);
+  const fullDate = query.date || Home.getDate();
+  const day = moment(fullDate, "L").format('ddd');
+  const date = moment(fullDate, "L").format('DD');
+  let boxscores;
+  try {
+    boxscores = await dugoutApi.getBoxscoresByDate(fullDate);
+  } catch (e) {
+    console.log(e);
+  }
+  return { 
+    props: 
+      {
+        boxscores,
+        isMobile,
+        fullDate,
+        day,
+        date 
+      }
+    };
 }
 
 export default Home;

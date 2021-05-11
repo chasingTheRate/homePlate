@@ -1,7 +1,7 @@
 import axios from 'axios';
 import mlb from '../models/mlb';
 
-const baseUrl = 'https://boxsco-mound-prod.appspot.com/api';
+const baseUrl = 'https://mound-web-api.herokuapp.com/api';
 
 export function getBoxscoresByDate(date) {
   const url = `${baseUrl}/mlb?date=${date}`;
